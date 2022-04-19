@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 24, 2021 at 03:46 PM
+-- Generation Time: Mar 21, 2022 at 02:12 PM
 -- Server version: 10.4.18-MariaDB
 -- PHP Version: 7.4.16
 
@@ -20,6 +20,31 @@ SET time_zone = "+00:00";
 --
 -- Database: `pustaka`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `booking`
+--
+
+CREATE TABLE `booking` (
+  `id_booking` varchar(12) CHARACTER SET latin1 NOT NULL,
+  `tgl_booking` date NOT NULL,
+  `batas_ambil` date NOT NULL,
+  `id_user` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `booking_detail`
+--
+
+CREATE TABLE `booking_detail` (
+  `id` int(11) NOT NULL,
+  `id_booking` varchar(12) CHARACTER SET latin1 NOT NULL,
+  `id_buku` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -58,7 +83,19 @@ INSERT INTO `buku` (`id`, `judul_buku`, `id_kategori`, `pengarang`, `penerbit`, 
 (19, 'Rahasia Keajaiban Bumi', 3, 'Nurul Ihsan', 'Luxima', 2014, '565756565768868', 13, 0, 0, 'img1557404689.jpg'),
 (20, 'Buku Pintar Puasa Wajib dan Sunnah Sepanjang Masa', 7, 'Ali Hasan', 'Luxima', 2011, '32342342344234', 13, 0, 0, 'img1557404775.jpg'),
 (21, 'Aspek Hukum dalam Penelitian', 6, 'Rianto Adi', 'Buku Obor', 2015, '7565646455757', 11, 0, 0, 'img1557404853.jpg'),
-(22, 'Belajar Mudah Pemrograman Web dengan Framework Codeigniter', 1, 'Imam Nawawi, Frans Edward S, Andriansah', 'Graha Ilmu', 2019, '12314213432', 13, 0, 0, 'img1580209540.PNG');
+(22, 'Belajar Mudah Pemrograman Web dengan Framework Codeigniter', 0, 'Imam Nawawi, Frans Edward S, Andriansah', 'Graha Ilmu', 2019, '12314213432', 13, 0, 0, 'img1640492310.jpg');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `detail_pinjam`
+--
+
+CREATE TABLE `detail_pinjam` (
+  `no_pinjam` varchar(12) NOT NULL,
+  `id_buku` int(11) NOT NULL,
+  `denda` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -91,6 +128,23 @@ INSERT INTO `kategori` (`id`, `kategori`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `pinjam`
+--
+
+CREATE TABLE `pinjam` (
+  `no_pinjam` varchar(12) NOT NULL,
+  `tgl_pinjam` date NOT NULL,
+  `id_booking` varchar(12) NOT NULL,
+  `id_user` int(11) NOT NULL,
+  `tgl_kembali` date NOT NULL,
+  `tgl_pengembalian` date NOT NULL,
+  `status` enum('pinjam','kembali','','') NOT NULL,
+  `total_denda` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `role`
 --
 
@@ -110,12 +164,32 @@ INSERT INTO `role` (`id`, `role`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `temp`
+--
+
+CREATE TABLE `temp` (
+  `id` int(11) NOT NULL,
+  `tgl_booking` datetime NOT NULL,
+  `id_user` varchar(12) CHARACTER SET latin1 NOT NULL,
+  `email_user` varchar(128) CHARACTER SET latin1 NOT NULL,
+  `id_buku` int(11) NOT NULL,
+  `judul_buku` varchar(225) CHARACTER SET latin1 NOT NULL,
+  `image` varchar(225) CHARACTER SET latin1 NOT NULL,
+  `penulis` varchar(128) CHARACTER SET latin1 NOT NULL,
+  `penerbit` varchar(128) CHARACTER SET latin1 NOT NULL,
+  `tahun_terbit` year(4) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `user`
 --
 
 CREATE TABLE `user` (
   `id` int(11) NOT NULL,
   `nama` varchar(128) NOT NULL,
+  `alamat` text NOT NULL,
   `email` varchar(128) NOT NULL,
   `image` varchar(128) NOT NULL,
   `password` varchar(256) NOT NULL,
@@ -128,22 +202,39 @@ CREATE TABLE `user` (
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`id`, `nama`, `email`, `image`, `password`, `role_id`, `is_active`, `tanggal_input`) VALUES
-(1, 'Imam Nawawi x', 'imam.imw@gmail.com', 'pro1605779080.jpg', '$2y$10$jLgqE1IBWTdVFuBfgq4u/upFdTkdRmKSigfZ7M8qHbjkTmnf26D5a', 1, 1, 1554218983),
-(2, 'Maruloh, M.Kom', 'maruloh.mru@bsi.ac.id', 'pro1579684727.jpg', '$2y$10$beSdsua15A.A.tmiLIsmfuQCLWGdptUwjXlGI2u2kqxlpPXpXqZ72', 2, 1, 1554219788),
-(3, 'Andriansah', 'andriansah.aiy@bsi.ac.id', 'pro1579677270.jpg', '$2y$10$Aa2soOYCyttqpIa1m8/79uc6Psz563XlTPcs0E4TuOji/UiKGox4i', 2, 1, 1579677270),
-(4, 'Mochamad Nandi Susila', 'mochamad.mnl@bsi.ac.id', 'pro1579677559.jpg', '$2y$10$N6itMt2sWT1dPXwedtmhsOFC/2eYoQ9k.MI5t1jNwGPE06oVv5Oqm', 2, 1, 1579677559),
-(5, 'Nandi', 'nandi@gmail.com', 'default.jpg', '$2y$10$3yF1EI7QF4vDYz4uM3oSfejUtrfzdTnFsUfl.kxAIByjPJ1X6tzD2', 2, 1, 1585627265),
-(6, 'Elearning', 'Elearn@gmail.com', 'default.jpg', '$2y$10$fzy4O9SHjqFIhbfzro7kq.GVI2QBPM0ROH0qHmu8eo1714mzNs4aG', 2, 1, 1585672094),
-(7, 'rio kusumah1', 'rio@gmail.com', 'pro1585674983.jpg', '$2y$10$jmppNsxyfdQ/XC/5fyGXVeqtDVcPwKG2bihfYjM.h6gkog1sCeWs2', 2, 1, 1585673039),
-(9, 'BUDI', 'budi@gmail.com', 'default.jpg', '$2y$10$Hm/Y6HEB4l1B6otBxbXGze.BpdoB3YoLRFCE44ReLM9otU3GBBlSW', 2, 1, 1585699680),
-(10, 'Rio Budiman OK', 'tesrio@gmail.com', 'pro1585723343.jpg', '$2y$10$XZV0MWZ6z4wQ6pjJU2N6HuHiHzHYxYw1EldKmzoKwugoQL9BNUFnq', 2, 1, 1585722652),
-(11, 'BUDI', 'budi123@gmail.com', 'default.jpg', '$2y$10$M3nnoACBgh55s3Sges5/f.dEHyp/CeOaqmz1rauAEZqV0LpplfOd.', 2, 1, 1605778048),
-(12, 'bsd123 OK', 'bsd123@gmail.com', 'pro1605796406.jpg', '$2y$10$qvSezpdFnCnmDfJSnBFXY.N.VNkt4G6DpZjxvrSilB8Tdzy5ULduC', 2, 1, 1605796003);
+INSERT INTO `user` (`id`, `nama`, `alamat`, `email`, `image`, `password`, `role_id`, `is_active`, `tanggal_input`) VALUES
+(1, 'Imam Nawawi x', '', 'imam.imw@gmail.com', 'pro1605779080.jpg', '$2y$10$jLgqE1IBWTdVFuBfgq4u/upFdTkdRmKSigfZ7M8qHbjkTmnf26D5a', 1, 1, 1554218983),
+(2, 'Maruloh, M.Kom', '', 'maruloh.mru@bsi.ac.id', 'pro1579684727.jpg', '$2y$10$beSdsua15A.A.tmiLIsmfuQCLWGdptUwjXlGI2u2kqxlpPXpXqZ72', 2, 1, 1554219788),
+(3, 'Andriansah', '', 'andriansah.aiy@bsi.ac.id', 'pro1579677270.jpg', '$2y$10$Aa2soOYCyttqpIa1m8/79uc6Psz563XlTPcs0E4TuOji/UiKGox4i', 2, 1, 1579677270),
+(4, 'Mochamad Nandi Susila', '', 'mochamad.mnl@bsi.ac.id', 'pro1579677559.jpg', '$2y$10$N6itMt2sWT1dPXwedtmhsOFC/2eYoQ9k.MI5t1jNwGPE06oVv5Oqm', 2, 1, 1579677559),
+(5, 'Nandi', '', 'nandi@gmail.com', 'default.jpg', '$2y$10$3yF1EI7QF4vDYz4uM3oSfejUtrfzdTnFsUfl.kxAIByjPJ1X6tzD2', 2, 1, 1585627265),
+(6, 'Elearning', '', 'Elearn@gmail.com', 'default.jpg', '$2y$10$fzy4O9SHjqFIhbfzro7kq.GVI2QBPM0ROH0qHmu8eo1714mzNs4aG', 2, 1, 1585672094),
+(7, 'rio kusumah1', '', 'rio@gmail.com', 'pro1585674983.jpg', '$2y$10$jmppNsxyfdQ/XC/5fyGXVeqtDVcPwKG2bihfYjM.h6gkog1sCeWs2', 2, 1, 1585673039),
+(9, 'BUDI', '', 'budi@gmail.com', 'default.jpg', '$2y$10$Hm/Y6HEB4l1B6otBxbXGze.BpdoB3YoLRFCE44ReLM9otU3GBBlSW', 2, 1, 1585699680),
+(10, 'Rio Budiman OK', '', 'tesrio@gmail.com', 'pro1585723343.jpg', '$2y$10$XZV0MWZ6z4wQ6pjJU2N6HuHiHzHYxYw1EldKmzoKwugoQL9BNUFnq', 2, 1, 1585722652),
+(11, 'BUDI', '', 'budi123@gmail.com', 'default.jpg', '$2y$10$M3nnoACBgh55s3Sges5/f.dEHyp/CeOaqmz1rauAEZqV0LpplfOd.', 2, 1, 1605778048),
+(12, 'bsd123 OK', '', 'bsd123@gmail.com', 'pro1605796406.jpg', '$2y$10$qvSezpdFnCnmDfJSnBFXY.N.VNkt4G6DpZjxvrSilB8Tdzy5ULduC', 2, 1, 1605796003),
+(13, 'Arista Amalia Agustin', '', 'arista25@gmail.com', 'default.jpg', '$2y$10$2/y.52AWsnrD6r2Oqyg5XO70Chc6l6Tf.4E57c.dvUlhrybxi.nJm', 2, 1, 1640357558),
+(14, 'Eca', '', 'Eca15@gmail.com', 'default.jpg', '$2y$10$DpC2WbmkzuImDaUk2BnsRO.I4ae/mDYmkLlPfKeTq.FlO.S4WUj5W', 2, 1, 1640357783),
+(15, 'Amalia', '', 'amalia15@gmail.com', 'pro1647309737.jpg', '$2y$10$z.uOmIc4uJGghtXGgM2bbOBYeg2/wdE/ivCfRYDZhtAjM1Wa1VVIK', 2, 1, 1640358644),
+(16, 'siapaaja', '', 'siapaaja@gmail.com', 'default.jpg', '$2y$10$pwYkJ1yA9RpalxjVgDsNFuqiiOqkOqpNW2Osav2n4/hezJSbPL9q.', 2, 0, 1640360585),
+(17, 'Salman', '', 'salman20@gmail.com', 'pro1640487409.jpg', '$2y$10$muuSZgFxW1LYYLjAoZuMkOCsy9aieHwIcc5T9CcO2spHYVQ6ltB4C', 2, 1, 1640426639);
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `booking`
+--
+ALTER TABLE `booking`
+  ADD PRIMARY KEY (`id_booking`);
+
+--
+-- Indexes for table `booking_detail`
+--
+ALTER TABLE `booking_detail`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `buku`
@@ -158,9 +249,21 @@ ALTER TABLE `kategori`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `pinjam`
+--
+ALTER TABLE `pinjam`
+  ADD PRIMARY KEY (`no_pinjam`);
+
+--
 -- Indexes for table `role`
 --
 ALTER TABLE `role`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `temp`
+--
+ALTER TABLE `temp`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -172,6 +275,12 @@ ALTER TABLE `user`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `booking_detail`
+--
+ALTER TABLE `booking_detail`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `buku`
@@ -192,10 +301,16 @@ ALTER TABLE `role`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT for table `temp`
+--
+ALTER TABLE `temp`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
